@@ -10,6 +10,8 @@ export class LoginPage {
 
   public readonly dashboardAssertion: Locator;
 
+  public readonly invalidCredentialAlertMessage: Locator;
+
   constructor(page: Page) {
     this.page = page;
     this.baseUrl =
@@ -28,6 +30,8 @@ export class LoginPage {
     this.dashboardAssertion = this.page.getByRole("heading", {
       name: "Dashboard",
     });
+
+    this.invalidCredentialAlertMessage = this.page.getByRole("alert");
   }
 
   async navigateToLoginPage() {
@@ -43,5 +47,19 @@ export class LoginPage {
       this.page.waitForLoadState("networkidle"),
       this.loginBtnSelector.click(),
     ]);
+  }
+  async invalidCredentials(dataTable: DataTable) {
+    const data = dataTable.hashes();
+
+    await this.usernameSelector.fill(data[0].username);
+    await this.passwordSelector.fill(data[0].password);
+    await Promise.all([
+      this.page.waitForLoadState("networkidle"),
+      this.loginBtnSelector.click(),
+    ]);
+  }
+
+  async errorMessage(message: string) {
+    await expect(this.invalidCredentialAlertMessage).toHaveText(message);
   }
 }

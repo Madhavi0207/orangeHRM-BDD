@@ -32,13 +32,23 @@ Then("the admin is logged in successfully", async function (this: CustomWorld) {
 When(
   "the admin enter the invalid credentials",
   async function (this: CustomWorld, dataTable: DataTable) {
-    console.log("okay");
+    if (!this.loginPage) {
+      this.loginPage = new LoginPage(this.page);
+    }
+
+    await this.loginPage.invalidCredentials(dataTable);
   },
 );
 
 Then(
   "the alert message {string} must appear",
-  async function (this: CustomWorld) {
-    console.log("okay");
+  async function (this: CustomWorld, message: string) {
+    if (!this.loginPage) {
+      this.loginPage = new LoginPage(this.page);
+    }
+    await Promise.all([
+      this.page.waitForLoadState("networkidle"),
+      this.loginPage.errorMessage(message),
+    ]);
   },
 );
