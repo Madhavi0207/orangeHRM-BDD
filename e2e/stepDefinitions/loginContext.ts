@@ -36,7 +36,7 @@ When(
       this.loginPage = new LoginPage(this.page);
     }
 
-    await this.loginPage.invalidCredentials(dataTable);
+    await this.loginPage.invalidCredentails(dataTable);
   },
 );
 
@@ -46,9 +46,8 @@ Then(
     if (!this.loginPage) {
       this.loginPage = new LoginPage(this.page);
     }
-    await Promise.all([
-      this.page.waitForLoadState("networkidle"),
-      this.loginPage.errorMessage(message),
-    ]);
+    await expect(this.loginPage.invalidCredentailAlertMessage).toHaveText(
+      message,
+    );
   },
 );
